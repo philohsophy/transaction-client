@@ -12,11 +12,14 @@ import (
 	models "github.com/philohsophy/dummy-blockchain-models"
 )
 
-type Client struct{}
+type TransactionSpawner struct {
+	Client  *http.Client
+	baseUrl string
+}
 
-func (c *Client) Run(baseUrl string) {
+func (c *TransactionSpawner) SpawnTransaction() ([]byte, error) {
 	t := createTransaction()
-	sendTransaction(t, baseUrl)
+	return sendTransaction(t, c.baseUrl)
 }
 
 func createTransaction() models.Transaction {
@@ -28,7 +31,7 @@ func createTransaction() models.Transaction {
 	return t
 }
 
-func sendTransaction(transaction models.Transaction, baseUrl string) {
+func sendTransaction(transaction models.Transaction, baseUrl string) ([]byte, error) {
 	data, err := json.Marshal(transaction)
 	if err != nil {
 		log.Fatal("Error transforming transaction to JSON", err)
@@ -57,4 +60,6 @@ func sendTransaction(transaction models.Transaction, baseUrl string) {
 	}
 
 	fmt.Printf("%s\n", body)
+
+	return body, nil
 }

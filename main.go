@@ -1,8 +1,12 @@
 package main
 
-import "os"
+import (
+	"net/http"
+	"os"
+)
 
 func main() {
-	c := Client{}
-	c.Run(os.Getenv("TRANSACTION_POOL_BASE_URL"))
+	baseUrl := os.Getenv("TRANSACTION_POOL_BASE_URL")
+	c := TransactionSpawner{&http.Client{}, baseUrl}
+	c.SpawnTransaction()
 }
