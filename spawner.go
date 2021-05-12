@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 
 	models "github.com/philohsophy/dummy-blockchain-models"
 )
@@ -17,12 +16,12 @@ type TransactionSpawner struct {
 	baseUrl string
 }
 
-func (c *TransactionSpawner) SpawnTransaction() ([]byte, error) {
-	t := createTransaction()
-	return sendTransaction(t, c.baseUrl)
+func (ts *TransactionSpawner) SpawnTransaction() error {
+	t := ts.createTransaction()
+	return ts.sendTransaction(t)
 }
 
-func createTransaction() models.Transaction {
+func (ts *TransactionSpawner) createTransaction() models.Transaction {
 	var t models.Transaction
 	t.RecipientAddress = models.Address{Name: "Foo", Street: "FooStreet", HouseNumber: "1", Town: "FooTown"}
 	t.SenderAddress = models.Address{Name: "Bar", Street: "BarStreet", HouseNumber: "1", Town: "BarTown"}
@@ -31,35 +30,36 @@ func createTransaction() models.Transaction {
 	return t
 }
 
-func sendTransaction(transaction models.Transaction, baseUrl string) ([]byte, error) {
+func (ts *TransactionSpawner) sendTransaction(transaction models.Transaction) error {
 	data, err := json.Marshal(transaction)
 	if err != nil {
 		log.Fatal("Error transforming transaction to JSON", err)
 	}
 
-	endpoint := baseUrl + "/transactions"
+	endpoint := ts.baseUrl + "/transactions"
 	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(data))
 	if err != nil {
 		log.Fatal("Error reading request. ", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{Timeout: time.Second * 10}
-	resp, err := client.Do(req)
+	res, err := ts.Client.Do(req)
 	if err != nil {
 		log.Fatal("Error reading response. ", err)
 	}
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
+	if res.StatusCode != 201 {
+		reason := res.Body
+		return fmt.Errorf("Failed to create Transaction: %s", reason)
+	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal("Error reading body. ", err)
 	}
 
 	fmt.Printf("%s\n", body)
 
-	return body, nil
+	return nil
 }
