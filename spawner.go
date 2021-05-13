@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	models "github.com/philohsophy/dummy-blockchain-models"
@@ -50,14 +52,19 @@ var sendTransaction = func(ts *TransactionSpawner, transaction models.Transactio
 
 	res, err := ts.Client.Do(req)
 	if err != nil {
-		return fmt.Errorf("Error reading response: %s", err.Error())
+		return fmt.Errorf("Error performing request: %s", err.Error())
 	}
 	defer res.Body.Close()
 
+	var resBody map[string]string
+	body, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal([]byte(body), &resBody)
+
 	if res.StatusCode != 201 {
-		reason := res.Body
-		return fmt.Errorf("Failed to insert Transaction into Transaction-Pool: %s", reason)
+		return fmt.Errorf("Failed to insert Transaction into Transaction-Pool: %s", resBody["error"])
 	}
+
+	log.Printf("Inserted new Transaction <%s> into Trancaction-Pool", resBody["id"])
 
 	return nil
 }
