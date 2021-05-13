@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 )
@@ -8,5 +9,8 @@ import (
 func main() {
 	baseUrl := os.Getenv("TRANSACTION_POOL_BASE_URL")
 	c := TransactionSpawner{&http.Client{}, baseUrl}
-	c.SpawnTransaction()
+	err := c.SpawnTransaction()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 }
