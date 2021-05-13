@@ -1,0 +1,4 @@
+github.com/google/uuid v1.2.0 h1:qJYtXnJRWmpe7m/3XlyhrsLrEURqHRM2kxzoxXqyUDs=
+github.com/google/uuid v1.2.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/philohsophy/dummy-blockchain-models v0.1.0-alpha h1:ceMP1C8ZNTXWRuPeW9vP3OVaZyVtEjmX1FOvZgp2oX8=
+github.com/philohsophy/dummy-blockchain-models v0.1.0-alpha/go.mod h1:C1XrpqmLkgnhrVu+7PSS+DONYZUCsJK/rW1HC/3/oqM=
