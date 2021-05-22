@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	models "github.com/philohsophy/dummy-blockchain-models"
+	models "github.com/philohsophy/blockchain-models"
 )
 
 type HTTPClient interface {
