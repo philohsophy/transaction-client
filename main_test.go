@@ -13,7 +13,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	models "github.com/philohsophy/dummy-blockchain-models"
+	models "github.com/philohsophy/blockchain-models"
 	"github.com/philohsophy/transaction-spawner/mocks"
 )
 
